@@ -1,0 +1,25 @@
+{
+  "name": "mxy-cli",
+  "version": "1.0.0",
+  "description": "cli",
+  "main": "index.js",
+  "bin": {
+    "mxy-cli": "bin/mxy"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "ci"
+  ],
+  "author": "betterTry",
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^2.3.0",
+    "commander": "^2.12.2",
+    "read-metadata": "^1.0.0"
+  },
+  "devDependencies": {
+    "inquirer": "^4.0.1"
+  }
+}
