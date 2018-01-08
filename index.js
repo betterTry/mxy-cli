@@ -3,6 +3,15 @@ const exists = require('fs').existsSync
 const inquirer = require('inquirer')
 const path = require('path');
 const chalk = require('chalk');
+const home = require('user-home')
+const rm = require('rimraf').sync
+const download = require('download-git-repo')
+const ora = require('ora')
+const exist = require('fs').existsSync
+const generate = require('./lib/generate')
+const exec = require('child_process').execSync
+
+
 
 program
   .version(require('./package').version)
@@ -23,9 +32,12 @@ program.on('--help', () => {
   console.log()
 })
 
-const rawName = program.args[1]
+const template = program.args[1]
+const rawName = program.args[2]
 const to = path.resolve(rawName || '.')
 const inPlace = !rawName || rawName === '.'
+const tmp = path.join(home, '.vue-templates', template.replace(/\//g, '-'))
+const clone = program.clone || false
 
 function help () {
   if (program.args.length < 2) {
@@ -42,7 +54,7 @@ if (program.args[0] == 'init') {
 
 function handleInit() {
   console.log(to);
-  if (exists(to)) {
+  if (exists(to)) { // 存在时;
     inquirer.prompt([{
       type: 'confirm',
       message: inPlace
@@ -51,12 +63,31 @@ function handleInit() {
       name: 'ok'
     }]).then(answers => {
       if (answers.ok) {
-        console.log('ok');
+        console.log('ok')
       } else {
-        console.log('not ok');
+        console.log('not ok')
       }
-    }).catch((e) => {console.log(33)})
+    }).catch((e) => {
+      console.log(e)
+    })
   } else {
-    console.log('not exist');
+    const _tmp = 'vuejs-templates/' + template;
+    console.log(_tmp)
+    downloadAndGenerate(_tmp);
+
   }
+}
+
+function downloadAndGenerate(template) {
+  const spinner = ora('downloading template')
+  spinner.start()
+  console.log()
+  console.log(tmp)
+  console.log(exist(tmp))
+  if (exist(tmp)) rm(tmp)
+  download(template, tmp, {clone}, err => {
+    spinner.stop()
+    if (err) console.log(err)
+    generate('a', tmp, to);
+  })
 }
