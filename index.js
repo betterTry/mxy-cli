@@ -1,15 +1,16 @@
 const program = require('commander');
-const exists = require('fs').existsSync
 const inquirer = require('inquirer')
 const path = require('path');
 const chalk = require('chalk');
 const home = require('user-home')
-const rm = require('rimraf').sync
 const download = require('download-git-repo')
 const ora = require('ora')
-const exist = require('fs').existsSync
-const generate = require('./lib/generate')
+const Metalsmith = require('metalsmith')
+const rm = require('rimraf').sync
+const exists = require('fs').existsSync
 const exec = require('child_process').execSync
+const generate = require('./lib/generate')
+const localPath = require('./lib/local-path')
 
 
 
@@ -32,19 +33,21 @@ program.on('--help', () => {
   console.log()
 })
 
-const template = program.args[1]
-const rawName = program.args[2]
-const to = path.resolve(rawName || '.')
-const inPlace = !rawName || rawName === '.'
-const tmp = path.join(home, '.vue-templates', template.replace(/\//g, '-'))
-const clone = program.clone || false
-
 function help () {
   if (program.args.length < 2) {
     return program.help()
   }
 }
 help()
+
+const template = program.args[1]
+const rawName = program.args[2]
+const to = path.resolve(rawName || '.')
+const inPlace = !rawName || rawName === '.'
+const name =  inPlace ? path.relative('../', process.cwd()) : rawName
+const tmp = path.join(home, '.vue-templates', template.replace(/\//g, '-'))
+const hasSlash = template.indexOf('/') > -1
+const clone = program.clone || false
 
 
 if (program.args[0] == 'init') {
@@ -63,31 +66,54 @@ function handleInit() {
       name: 'ok'
     }]).then(answers => {
       if (answers.ok) {
-        console.log('ok')
-      } else {
-        console.log('not ok')
+        run()
       }
     }).catch((e) => {
       console.log(e)
     })
   } else {
-    const _tmp = 'vuejs-templates/' + template;
-    console.log(_tmp)
-    downloadAndGenerate(_tmp);
+    run()
+  }
+}
 
+function run() {
+  if (localPath.isLocalPath(template)) {
+    const templatePath = localPath.getLocalPath(template)
+    if (exists(templatePath)) {
+      generate(rawName, templatePath, to, err => {
+        if (err) console.log(err)
+      })
+    } else {
+      console.error('not exist this template "%s" in local', template);
+    }
+  } else {
+    // 不是本地;
+    if (!hasSlash) {
+      const _tmp = 'vuejs-templates/' + template;
+      downloadAndGenerate(_tmp)
+    } else {
+      downloadAndGenerate(template)
+    }
   }
 }
 
 function downloadAndGenerate(template) {
   const spinner = ora('downloading template')
   spinner.start()
-  console.log()
-  console.log(tmp)
-  console.log(exist(tmp))
-  if (exist(tmp)) rm(tmp)
+  // console.log(tmp)
+  if (exists(tmp)) rm(tmp)
   download(template, tmp, {clone}, err => {
     spinner.stop()
     if (err) console.log(err)
-    generate('a', tmp, to);
+    generate(rawName, tmp, to, (err) => {
+      if (err) {
+        console.log(err)
+        process.exit()
+      } else {
+        console.log('done')
+        process.exit(1)
+      }
+    });
   })
+
 }
