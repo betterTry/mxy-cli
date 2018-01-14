@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 const program = require('commander');
 const inquirer = require('inquirer')
 const path = require('path');
@@ -40,7 +42,7 @@ function help () {
 help()
 
 const template = program.args[0]
-const rawName = program.args[0]
+const rawName = program.args[1]
 const to = path.resolve(rawName || '.')
 const inPlace = !rawName || rawName === '.'
 const name =  inPlace ? path.relative('../', process.cwd()) : rawName
