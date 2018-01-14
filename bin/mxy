@@ -1,6 +1,7 @@
 #!/usr/local/bin node
 
-const program = require('commander');
-
-program.version(require('../package.json').version)
-  .option('-p', 'hello');
+require('commander')
+  .version(require('../package').version)
+  .usage('<command> [options]')
+  .command('init', 'generate a new project from a template')
+  .parse(process.argv)
