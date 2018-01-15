@@ -60,29 +60,22 @@ if (program.offline) {
   )
 }
 
-if (program.args[0] == 'init') {
-  handleInit();
-}
-
-
-function handleInit() {
-  if (exists(to)) { // 存在时;
-    inquirer.prompt([{
-      type: 'confirm',
-      message: inPlace
-        ? 'Generate project in current directory?'
-        : 'Target directory exists. Continue?',
-      name: 'ok'
-    }]).then(answers => {
-      if (answers.ok) {
-        run()
-      }
-    }).catch((e) => {
-      console.log(e)
-    })
-  } else {
-    run()
-  }
+if (exists(to)) { // 存在时;
+  inquirer.prompt([{
+    type: 'confirm',
+    message: inPlace
+      ? 'Generate project in current directory?'
+      : 'Target directory exists. Continue?',
+    name: 'ok'
+  }]).then(answers => {
+    if (answers.ok) {
+      run()
+    }
+  }).catch((e) => {
+    console.log(e)
+  })
+} else {
+  run()
 }
 
 function run() {

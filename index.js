@@ -58,6 +58,7 @@ if (program.offline) {
   )
 }
 
+// don't need this in bin/mxy-init.
 if (program.args[0] == 'init') {
   handleInit();
 }
