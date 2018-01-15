@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 const program = require('commander');
 const inquirer = require('inquirer')
 const path = require('path');
@@ -19,7 +17,7 @@ const localPath = require('../lib/local-path')
 program
   .version(require('./package').version)
   .usage('<command> [options]')
-  .option('--offline', 'use local template')
+  .option('--offline', 'check the version')
 
 program.parse(process.argv)
 
@@ -35,18 +33,18 @@ program.on('--help', () => {
 })
 
 function help () {
-  if (program.args.length < 1) {
+  if (program.args.length < 2) {
     return program.help()
   }
 }
 help()
 
-let template = program.args[0]
-const rawName = program.args[1]
+let template = program.args[1]
+const rawName = program.args[2]
 const to = path.resolve(rawName || '.')
 const inPlace = !rawName || rawName === '.'
 const name =  inPlace ? path.relative('../', process.cwd()) : rawName
-tenmplate = template.test('-template') ? template : tenmplate + '-template'
+template = template.indexOf('-template') > 0 ? template : template + '-template'
 const tmp = path.join(home, '.mxy-templates', template.replace(/\//g, '-'))
 const hasSlash = template.indexOf('/') > -1
 const clone = program.clone || false
@@ -56,13 +54,13 @@ if (program.offline) {
   template = tmp
   console.log(
     '> Use cached template at ',
-    chalk.yellow(tildify(tmp)
+    chalk.yellow(tildify(tmp))
   )
 }
+
 if (program.args[0] == 'init') {
   handleInit();
 }
-
 
 
 function handleInit() {
@@ -92,10 +90,9 @@ function run() {
       generate(rawName, templatePath, to, (err, name) => {
         if (err) console.log(err)
         console.log(
-          chalk.green(`Project \`${name}\` has been created successfully.`),
           '\n',
-          chalk.green('Have a good time!'),
-          '\n'
+          `Project \`${name}\` has been created successfully.\n`,
+          'Have a good time!\n'
         )
       })
     } else {
@@ -104,7 +101,7 @@ function run() {
   } else {
     // 不是本地;
     if (!hasSlash) {
-      const _tmp = 'betterTry/' + template + '-template';
+      const _tmp = 'betterTry/' + template;
       downloadAndGenerate(_tmp)
     } else {
       downloadAndGenerate(template)
@@ -115,7 +112,6 @@ function run() {
 function downloadAndGenerate(template) {
   const spinner = ora('downloading template')
   spinner.start()
-  // console.log(tmp)
   if (exists(tmp)) rm(tmp)
   download(template, tmp, {clone}, err => {
     spinner.stop()
@@ -126,10 +122,9 @@ function downloadAndGenerate(template) {
         process.exit(1)
       } else {
         console.log(
-          chalk.green(`Project \`${name}\` has been created successfully.`),
           '\n',
-          chalk.green('Have a good time!'),
-          '\n'
+          `Project \`${name}\` has been created successfully.\n`,
+          'Have a good time!\n'
         )
         process.exit()
       }

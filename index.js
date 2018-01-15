@@ -91,8 +91,8 @@ function run() {
         if (err) console.log(err)
         console.log(
           '\n',
-          chalk.green(`Project \`${name}\` has been created successfully.\n`),
-          chalk.green('Have a good time!\n'),
+          `Project \`${name}\` has been created successfully.\n`,
+          'Have a good time!\n'
         )
       })
     } else {
@@ -112,15 +112,10 @@ function run() {
 function downloadAndGenerate(template) {
   const spinner = ora('downloading template')
   spinner.start()
-  // console.log(tmp)
-  console.log(tmp)
   if (exists(tmp)) rm(tmp)
   download(template, tmp, {clone}, err => {
     spinner.stop()
-    if (err) {
-      console.log(1)
-      console.log(err)
-    }
+    if (err) console.log(err)
     generate(rawName, tmp, to, (err, name) => {
       if (err) {
         console.error(err)
@@ -128,8 +123,8 @@ function downloadAndGenerate(template) {
       } else {
         console.log(
           '\n',
-          chalk.green(`Project \`${name}\` has been created successfully.\n`),
-          chalk.green('Have a good time!\n'),
+          `Project \`${name}\` has been created successfully.\n`,
+          'Have a good time!\n'
         )
         process.exit()
       }
