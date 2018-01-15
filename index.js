@@ -44,7 +44,8 @@ const rawName = program.args[2]
 const to = path.resolve(rawName || '.')
 const inPlace = !rawName || rawName === '.'
 const name =  inPlace ? path.relative('../', process.cwd()) : rawName
-const tmp = path.join(home, '.vue-templates', template.replace(/\//g, '-'))
+template = template.indexOf('-template') > 0 ? template : template + '-template'
+const tmp = path.join(home, '.mxy-templates', template.replace(/\//g, '-'))
 const hasSlash = template.indexOf('/') > -1
 const clone = program.clone || false
 const offline = program.offline || false
@@ -89,10 +90,9 @@ function run() {
       generate(rawName, templatePath, to, (err, name) => {
         if (err) console.log(err)
         console.log(
-          chalk.green(`Project \`${name}\` has been created successfully.`),
           '\n',
-          chalk.green('Have a good time!'),
-          '\n'
+          chalk.green(`Project \`${name}\` has been created successfully.\n`),
+          chalk.green('Have a good time!\n'),
         )
       })
     } else {
@@ -101,7 +101,7 @@ function run() {
   } else {
     // 不是本地;
     if (!hasSlash) {
-      const _tmp = 'vuejs-templates/' + template;
+      const _tmp = 'betterTry/' + template;
       downloadAndGenerate(_tmp)
     } else {
       downloadAndGenerate(template)
@@ -113,20 +113,23 @@ function downloadAndGenerate(template) {
   const spinner = ora('downloading template')
   spinner.start()
   // console.log(tmp)
+  console.log(tmp)
   if (exists(tmp)) rm(tmp)
   download(template, tmp, {clone}, err => {
     spinner.stop()
-    if (err) console.log(err)
+    if (err) {
+      console.log(1)
+      console.log(err)
+    }
     generate(rawName, tmp, to, (err, name) => {
       if (err) {
         console.error(err)
         process.exit(1)
       } else {
         console.log(
-          chalk.green(`Project \`${name}\` has been created successfully.`),
           '\n',
-          chalk.green('Have a good time!'),
-          '\n'
+          chalk.green(`Project \`${name}\` has been created successfully.\n`),
+          chalk.green('Have a good time!\n'),
         )
         process.exit()
       }

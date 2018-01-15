@@ -41,12 +41,13 @@ function help () {
 }
 help()
 
-const template = program.args[0]
+let template = program.args[0]
 const rawName = program.args[1]
 const to = path.resolve(rawName || '.')
 const inPlace = !rawName || rawName === '.'
 const name =  inPlace ? path.relative('../', process.cwd()) : rawName
-const tmp = path.join(home, '.vue-templates', template.replace(/\//g, '-'))
+tenmplate = template.test('-template') ? template : tenmplate + '-template'
+const tmp = path.join(home, '.mxy-templates', template.replace(/\//g, '-'))
 const hasSlash = template.indexOf('/') > -1
 const clone = program.clone || false
 const offline = program.offline || false
@@ -103,7 +104,7 @@ function run() {
   } else {
     // 不是本地;
     if (!hasSlash) {
-      const _tmp = 'vuejs-templates/' + template;
+      const _tmp = 'betterTry/' + template + '-template';
       downloadAndGenerate(_tmp)
     } else {
       downloadAndGenerate(template)
