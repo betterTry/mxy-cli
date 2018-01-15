@@ -17,7 +17,7 @@ const localPath = require('../lib/local-path')
 
 
 program
-  .version(require('./package').version)
+  .version(require('../package').version)
   .usage('<command> [options]')
   .option('--offline', 'check the version')
 
