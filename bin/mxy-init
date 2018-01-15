@@ -35,14 +35,14 @@ program.on('--help', () => {
 })
 
 function help () {
-  if (program.args.length < 2) {
+  if (program.args.length < 1) {
     return program.help()
   }
 }
 help()
 
-let template = program.args[1]
-const rawName = program.args[2]
+let template = program.args[0]
+const rawName = program.args[1]
 const to = path.resolve(rawName || '.')
 const inPlace = !rawName || rawName === '.'
 const name =  inPlace ? path.relative('../', process.cwd()) : rawName
