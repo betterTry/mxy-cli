@@ -1,16 +1,17 @@
 {
   "name": "mxy-cli",
   "version": "0.0.1",
-  "description": "cli",
+  "description": "a simple javascript project cli",
   "main": "index.js",
   "bin": {
-    "mxy-cli": "bin/mxy"
+    "mxy": "bin/mxy",
+    "mxy-init": "bin/mxy-init"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
-    "ci"
+    "cli"
   ],
   "author": "betterTry",
   "license": "MIT",
@@ -30,5 +31,8 @@
   },
   "devDependencies": {
     "inquirer": "^4.0.1"
+  },
+  "engines": {
+    "node": ">=6.0.0"
   }
 }
